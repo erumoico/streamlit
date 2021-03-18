@@ -517,7 +517,7 @@ def _server_port():
 
     Default: 8501
     """
-    return 8501
+    return 8504
 
 
 _create_option(
