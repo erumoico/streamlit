@@ -28,7 +28,7 @@ import {
   DEFAULT_IFRAME_FEATURE_POLICY,
   DEFAULT_IFRAME_SANDBOX_POLICY,
 } from "lib/IFrameUtil"
-import { logError, logWarning } from "lib/log"
+import { logError, logWarning, logDebug } from "lib/log"
 import { Timer } from "lib/Timer"
 import { Source, WidgetStateManager } from "lib/WidgetStateManager"
 import queryString from "query-string"
@@ -49,7 +49,7 @@ export const CUSTOM_COMPONENT_API_VERSION = 1
  * after the component has been created, explain to the user that there
  * may be a problem with their component, and offer troubleshooting advice.
  */
-export const COMPONENT_READY_WARNING_TIME_MS = 3000
+export const COMPONENT_READY_WARNING_TIME_MS = 10000
 
 export interface Props {
   registry: ComponentRegistry
@@ -96,6 +96,10 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount = (): void => {
+    logDebug(
+      `The component with key=="${this.curArgs.key}" did mount.`,
+      this
+    )
     if (this.iframeRef.current == null) {
       // This should not be possible.
       logError(
@@ -126,6 +130,10 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
   }
 
   public componentWillUnmount = (): void => {
+    logDebug(
+      `The component with key=="${this.curArgs.key}" will unmount.`,
+      this
+    )
     if (
       this.iframeRef.current == null ||
       this.iframeRef.current.contentWindow == null

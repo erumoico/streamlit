@@ -22,6 +22,15 @@ import { IS_DEV_ENV } from "./baseconsts"
 /**
  * Log a message to the console, but only if in dev mode.
  */
+export function logDebug(...args: any[]): void {
+  if (IS_DEV_ENV) {
+    console.debug(...args)
+  }
+}
+
+/**
+ * Log a message to the console, but only if in dev mode.
+ */
 export function logMessage(...args: any[]): void {
   if (IS_DEV_ENV) {
     console.log(...args)
