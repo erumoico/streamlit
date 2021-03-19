@@ -145,6 +145,22 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
       this.iframeRef.current != null ? Boolean(this.iframeRef.current.contentWindow == this.last_contentWindow) : false,
       this
     )
+    if (
+      this.iframeRef.current == null ||
+      this.iframeRef.current.contentWindow == null
+    ) {
+      return
+    }
+
+    if (this.last_contentWindow != null && this.iframeRef.current.contentWindow != this.last_contentWindow) {
+      this.props.registry.deregisterListener(
+        this.last_contentWindow
+      )
+      this.props.registry.registerListener(
+        this.iframeRef.current.contentWindow,
+        this.onBackMsg
+      )
+    }
   }
 
   public componentWillUnmount = (): void => {
