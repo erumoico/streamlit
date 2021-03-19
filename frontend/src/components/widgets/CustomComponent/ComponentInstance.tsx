@@ -79,6 +79,8 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
   // True when we've received the COMPONENT_READY message
   private componentReady = false
 
+  private last_contentWindow: null | Window = null
+
   // The most recent JSON and bytes args we've received from Python.
   private curArgs: { [name: string]: any } = {}
 
@@ -98,6 +100,7 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
   public componentDidMount = (): void => {
     logDebug(
       `The component with key=="${this.curArgs.key}" did mount.`,
+      this.iframeRef.current != null ? Boolean(this.iframeRef.current.contentWindow == this.last_contentWindow) : false,
       this
     )
     if (this.iframeRef.current == null) {
@@ -116,6 +119,7 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
       return
     }
 
+    this.last_contentWindow = this.iframeRef.current.contentWindow
     this.props.registry.registerListener(
       this.iframeRef.current.contentWindow,
       this.onBackMsg
@@ -123,15 +127,30 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
 
     // Start a timer. If we haven't gotten the COMPONENT_READY message
     // after a short time, we'll display a warning to the user.
-    this.componentReadyWarningTimer.setTimeout(
-      () => this.setState({ readyTimeout: true }),
-      COMPONENT_READY_WARNING_TIME_MS
+    //this.componentReadyWarningTimer.setTimeout(
+    //  () => this.setState({ readyTimeout: true }),
+    //  COMPONENT_READY_WARNING_TIME_MS
+    //)
+
+    logDebug(
+      `End of the component with key=="${this.curArgs.key}" did mount.`,
+      this.iframeRef.current != null ? Boolean(this.iframeRef.current.contentWindow == this.last_contentWindow) : false,
+      this
+    )
+  }
+
+  public componentDidUpdate = (): void => {
+    logDebug(
+      `The component with key=="${this.curArgs.key}" did update.`,
+      this.iframeRef.current != null ? Boolean(this.iframeRef.current.contentWindow == this.last_contentWindow) : false,
+      this
     )
   }
 
   public componentWillUnmount = (): void => {
     logDebug(
       `The component with key=="${this.curArgs.key}" will unmount.`,
+      this.iframeRef.current != null ? Boolean(this.iframeRef.current.contentWindow == this.last_contentWindow) : false,
       this
     )
     if (

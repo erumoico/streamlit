@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { logWarning } from "lib/log"
+import { logWarning, logDebug } from "lib/log"
 import { BaseUriParts, buildHttpUri } from "lib/UriUtil"
 import { ComponentMessageType } from "./enums"
 
@@ -53,10 +53,19 @@ export class ComponentRegistry {
       logWarning(`MessageEventSource registered multiple times!`, source)
     }
 
+    logDebug(
+      "Registering listener",
+      source,
+      listener
+    )
     this.msgListeners.set(source, listener)
   }
 
   public deregisterListener = (source: MessageEventSource): void => {
+    logDebug(
+      "Deregistering listener",
+      source
+    )
     const removed = this.msgListeners.delete(source)
     if (!removed) {
       logWarning(`Could not deregister unregistered MessageEventSource!`)
@@ -99,7 +108,8 @@ export class ComponentRegistry {
     if (listener == null) {
       logWarning(
         `Received component message for unregistered ComponentInstance!`,
-        event.data
+        event.data,
+        event.source
       )
       return
     }
