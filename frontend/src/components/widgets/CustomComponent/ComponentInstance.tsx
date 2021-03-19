@@ -156,6 +156,7 @@ export class ComponentInstance extends React.PureComponent<Props, State> {
       this.props.registry.deregisterListener(
         this.last_contentWindow
       )
+      this.last_contentWindow = this.iframeRef.current.contentWindow
       this.props.registry.registerListener(
         this.iframeRef.current.contentWindow,
         this.onBackMsg
